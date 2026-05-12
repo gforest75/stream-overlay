@@ -72,17 +72,19 @@ function sanitizeLabel(s) {
 function applyProgress() {
   const rawTotal = document.getElementById('input-total').value.trim();
   const rawLabel = document.getElementById('input-label').value.trim();
-  const patch = {};
-  if (rawTotal !== '') {
-    const n = parseInt(rawTotal, 10);
-    if (!isNaN(n) && n >= 1 && n <= 99) patch.progress_total = n;
-  }
-  if (rawLabel !== '') {
-    const label = sanitizeLabel(rawLabel);
-    if (label.length > 0) patch.progress_label = label;
-  }
-  if (Object.keys(patch).length === 0) return;
-  push(patch);
+
+  const total = parseInt(rawTotal, 10);
+  if (isNaN(total) || total < 1 || total > 99) return;
+
+  // Fall back to current label if the field is left empty
+  const label = rawLabel !== '' ? sanitizeLabel(rawLabel) : STATE.progress_label;
+
+  push({
+    progress_label:   label,
+    progress_total:   total,
+    progress_current: 0,
+  });
+
   document.getElementById('input-total').value = '';
   document.getElementById('input-label').value = '';
   toast('Objectif mis à jour');
