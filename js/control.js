@@ -94,8 +94,9 @@ function applyProgress() {
 const VISIBILITY_KEY = 'widget_visibility';
 
 function loadVisibility() {
-  try { return JSON.parse(localStorage.getItem(VISIBILITY_KEY)) || {}; }
-  catch { return {}; }
+  const defaults = { deaths: true, progress: true, rage: true };
+  try { return JSON.parse(localStorage.getItem(VISIBILITY_KEY)) || defaults; }
+  catch { return defaults; }
 }
 
 function saveVisibility(state) {
@@ -112,12 +113,13 @@ function applyVisibility(state) {
   });
 }
 
-function toggleWidget(key) {
+function toggleWidget(name) {
   const state = loadVisibility();
-  state[key] = state[key] === false; // false→true, true/undefined→false
+  state[name] = !state[name];
   saveVisibility(state);
   applyVisibility(state);
 }
+window.toggleWidget = toggleWidget;
 
 /* ── Rage ── */
 function updateRage(d) {
