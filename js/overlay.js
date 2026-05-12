@@ -1,0 +1,65 @@
+const SUPABASE_URL = 'https://vdiqyyitfwqpstizvbti.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkaXF5eWl0ZndxcHN0aXp2YnRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1ODg0NDksImV4cCI6MjA5NDE2NDQ0OX0.DaJEPYh_WOA3QwYDbpAsQhzWDeJ6P3JoPPc9X6EYoB8';
+
+const STATE = {
+  deaths: 0,
+  rage: 0,
+  progress_current: 0,
+  progress_total: 10,
+  progress_label: 'Bosses',
+};
+
+function pop(el) {
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+
+function applyState(s) {
+  const deathsEl = document.getElementById('deaths-value');
+  const rageEl   = document.getElementById('rage-value');
+  const pcEl     = document.getElementById('progress-current');
+
+  if (s.deaths !== STATE.deaths)           pop(deathsEl);
+  if (s.rage   !== STATE.rage)             pop(rageEl);
+  if (s.progress_current !== STATE.progress_current) pop(pcEl);
+
+  Object.assign(STATE, s);
+
+  deathsEl.textContent = STATE.deaths;
+  rageEl.textContent   = STATE.rage;
+  pcEl.textContent     = STATE.progress_current;
+
+  document.getElementById('progress-total').textContent = STATE.progress_total;
+  document.getElementById('progress-label').textContent = STATE.progress_label;
+
+  const pct = STATE.progress_total > 0
+    ? Math.min(100, (STATE.progress_current / STATE.progress_total) * 100)
+    : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+
+  const ragePct = Math.min(100, STATE.rage);
+  document.getElementById('rage-fill').style.width = ragePct + '%';
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const { data, error } = await db
+    .from('overlay_state')
+    .select('*')
+    .eq('id', 1)
+    .single();
+
+  if (data) applyState(data);
+
+  db
+    .channel('overlay-realtime')
+    .on(
+      'postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'overlay_state', filter: 'id=eq.1' },
+      (payload) => applyState(payload.new)
+    )
+    .subscribe();
+});

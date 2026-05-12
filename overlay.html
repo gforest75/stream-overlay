@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stream Overlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/overlay.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/overlay.js" defer></script>
+</head>
+<body>
+
+  <div id="w-deaths" class="widget">
+    <div class="widget-label">DEATHS</div>
+    <div class="widget-value" id="deaths-value">0</div>
+  </div>
+
+  <div id="w-progress" class="widget">
+    <div class="widget-label" id="progress-label">Bosses</div>
+    <div class="widget-fraction">
+      <span class="widget-value" id="progress-current">0</span>
+      <span class="widget-sep">/</span>
+      <span class="widget-total" id="progress-total">10</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+  </div>
+
+  <div id="w-rage" class="widget">
+    <div class="widget-label">RAGE</div>
+    <div class="widget-value rage-value" id="rage-value">0</div>
+    <div class="rage-meter">
+      <div class="rage-fill" id="rage-fill"></div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Overlay Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/control.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/control.js" defer></script>
+</head>
+<body>
+
+  <header id="header">
+    <span id="status-dot" class="disconnected"></span>
+    <span id="status-txt">Connecting…</span>
+  </header>
+
+  <main>
+
+    <!-- Deaths -->
+    <section id="section-deaths" class="card">
+      <h2 class="section-title">DEATHS</h2>
+      <div class="value-display" id="ctrl-deaths">0</div>
+      <div class="btn-row">
+        <button class="btn btn-dim"    onclick="updateDeaths(-1)">−1</button>
+        <button class="btn btn-red"    onclick="updateDeaths(1)">+1</button>
+        <button class="btn btn-blue"   onclick="resetDeaths()">Reset</button>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section id="section-progress" class="card">
+      <h2 class="section-title">PROGRESS</h2>
+      <div class="value-display" id="ctrl-progress">0 / 10</div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="ctrl-progress-bar"></div>
+      </div>
+      <div class="label-display" id="ctrl-progress-label">Bosses</div>
+
+      <div class="btn-row">
+        <button class="btn btn-dim"    onclick="updateProgress(-1)">−1</button>
+        <button class="btn btn-orange" onclick="updateProgress(1)">+1</button>
+        <button class="btn btn-green"  onclick="completeProgress()">Done</button>
+        <button class="btn btn-blue"   onclick="resetProgress()">Reset</button>
+      </div>
+
+      <div class="input-row">
+        <input type="number" id="input-total"  class="ctrl-input" placeholder="Total (ex: 10)" min="0" />
+        <input type="text"   id="input-label"  class="ctrl-input" placeholder="Label (ex: Bosses)" />
+        <button class="btn btn-orange" onclick="applyProgress()">Apply</button>
+      </div>
+    </section>
+
+    <!-- Rage -->
+    <section id="section-rage" class="card">
+      <h2 class="section-title">RAGE METER</h2>
+      <div class="value-display" id="ctrl-rage">0</div>
+      <div class="rage-grid">
+        <button class="btn btn-dim"    onclick="updateRage(-10)">−10</button>
+        <button class="btn btn-dim"    onclick="updateRage(-5)">−5</button>
+        <button class="btn btn-red"    onclick="updateRage(5)">+5</button>
+        <button class="btn btn-red"    onclick="updateRage(10)">+10</button>
+        <button class="btn btn-blue span-4" onclick="resetRage()">Reset</button>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast"></div>
+
+</body>
+</html>
