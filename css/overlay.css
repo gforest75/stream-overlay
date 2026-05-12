@@ -36,12 +36,16 @@ html, body {
   transition: opacity 0.3s ease;
 }
 
-.widget.hidden {
+.widget-hidden {
   opacity: 0;
   pointer-events: none;
-  animation: none; /* prevent wIn flash when hidden at load time */
+  transition: opacity 0.3s;
 }
 
+.widget-visible {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
 .widget-label {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
