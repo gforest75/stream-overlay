@@ -114,11 +114,26 @@ function applyVisibility(state) {
   });
 }
 
+// JS/CONTROL.JS — toggleWidget(name)
+
 function toggleWidget(name) {
-  const state = loadVisibility();
-  state[name] = !state[name];
-  saveVisibility(state);
-  applyVisibility(state);
+  const key = 'widget_visibility';
+
+  let state = {};
+  try {
+    state = JSON.parse(localStorage.getItem(key)) || {};
+  } catch {}
+
+  const enabled = state[name] !== false;
+  state[name] = !enabled;
+
+  // garder localStorage
+  localStorage.setItem(key, JSON.stringify(state));
+
+  // sync realtime
+  push({
+    [`show_${name}`]: state[name]
+  });
 }
 window.toggleWidget = toggleWidget;
 
