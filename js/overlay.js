@@ -28,8 +28,30 @@ function validateState(s) {
   };
 }
 
+// JS/OVERLAY.JS — applyState(s)
+
 function applyState(s) {
   const safe = validateState(s);
+
+  const visibility = [
+    ['show_deaths', 'w-deaths'],
+    ['show_progress', 'w-progress'],
+    ['show_rage', 'w-rage']
+  ];
+
+  visibility.forEach(([stateKey, elId]) => {
+    const el = document.getElementById(elId);
+    if (!el) return;
+
+    if (s[stateKey] === false) {
+      el.classList.remove('widget-visible');
+      el.classList.add('widget-hidden');
+    } else {
+      el.classList.remove('widget-hidden');
+      el.classList.add('widget-visible');
+    }
+  });
+
   const deathsEl = document.getElementById('deaths-value');
   const rageEl   = document.getElementById('rage-value');
   const pcEl     = document.getElementById('progress-current');
@@ -50,6 +72,7 @@ function applyState(s) {
   const pct = STATE.progress_total > 0
     ? Math.min(100, (STATE.progress_current / STATE.progress_total) * 100)
     : 0;
+
   document.getElementById('progress-bar').style.width = pct + '%';
 
   const ragePct = Math.min(100, STATE.rage);
