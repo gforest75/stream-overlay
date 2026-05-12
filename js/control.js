@@ -40,7 +40,7 @@ async function push(patch) {
 
 /* ── Deaths ── */
 function updateDeaths(d) {
-  push({ deaths: Math.max(0, STATE.deaths + d) });
+  push({ deaths: Math.max(0, Math.min(9999, STATE.deaths + d)) });
 }
 
 function resetDeaths() {
@@ -64,15 +64,23 @@ function resetProgress() {
   toast('Progress remis à 0');
 }
 
+function sanitizeLabel(s) {
+  // Allow letters (incl. accented), numbers, spaces, hyphens — strip everything else
+  return s.replace(/[^a-zA-ZÀ-ÿ0-9 \-]/g, '').trim().slice(0, 30);
+}
+
 function applyProgress() {
   const rawTotal = document.getElementById('input-total').value.trim();
   const rawLabel = document.getElementById('input-label').value.trim();
   const patch = {};
   if (rawTotal !== '') {
     const n = parseInt(rawTotal, 10);
-    if (!isNaN(n) && n >= 0) patch.progress_total = n;
+    if (!isNaN(n) && n >= 1 && n <= 99) patch.progress_total = n;
   }
-  if (rawLabel !== '') patch.progress_label = rawLabel;
+  if (rawLabel !== '') {
+    const label = sanitizeLabel(rawLabel);
+    if (label.length > 0) patch.progress_label = label;
+  }
   if (Object.keys(patch).length === 0) return;
   push(patch);
   document.getElementById('input-total').value = '';

@@ -15,16 +15,30 @@ function pop(el) {
   el.classList.add('pop');
 }
 
+function validateState(s) {
+  // Sanitize values received from Supabase before any DOM write (defense in depth)
+  return {
+    deaths:           Math.max(0, Math.min(9999, parseInt(s.deaths, 10)           || 0)),
+    rage:             Math.max(0, Math.min(100,  parseInt(s.rage, 10)             || 0)),
+    progress_current: Math.max(0, Math.min(999,  parseInt(s.progress_current, 10) || 0)),
+    progress_total:   Math.max(1, Math.min(99,   parseInt(s.progress_total, 10)   || 10)),
+    progress_label:   typeof s.progress_label === 'string'
+      ? s.progress_label.replace(/[^a-zA-ZÀ-ÿ0-9 \-]/g, '').trim().slice(0, 30) || 'Bosses'
+      : 'Bosses',
+  };
+}
+
 function applyState(s) {
+  const safe = validateState(s);
   const deathsEl = document.getElementById('deaths-value');
   const rageEl   = document.getElementById('rage-value');
   const pcEl     = document.getElementById('progress-current');
 
-  if (s.deaths !== STATE.deaths)           pop(deathsEl);
-  if (s.rage   !== STATE.rage)             pop(rageEl);
-  if (s.progress_current !== STATE.progress_current) pop(pcEl);
+  if (safe.deaths !== STATE.deaths)                     pop(deathsEl);
+  if (safe.rage   !== STATE.rage)                       pop(rageEl);
+  if (safe.progress_current !== STATE.progress_current) pop(pcEl);
 
-  Object.assign(STATE, s);
+  Object.assign(STATE, safe);
 
   deathsEl.textContent = STATE.deaths;
   rageEl.textContent   = STATE.rage;
