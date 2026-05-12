@@ -57,10 +57,15 @@ function applyState(s) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const { createClient } = supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    realtime: {
+      params: {
+        eventsPerSecond: 10,
+      },
+    },
+  });
 
-  const { data, error } = await db
+  const { data } = await sb
     .from('overlay_state')
     .select('*')
     .eq('id', 1)
@@ -68,12 +73,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (data) applyState(data);
 
-  db
-    .channel('overlay-realtime')
+  const channel = sb
+    .channel('overlay-changes')
     .on(
       'postgres_changes',
-      { event: 'UPDATE', schema: 'public', table: 'overlay_state', filter: 'id=eq.1' },
-      (payload) => applyState(payload.new)
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'overlay_state',
+        filter: 'id=eq.1',
+      },
+      (payload) => {
+        applyState(payload.new);
+      }
     )
-    .subscribe();
+    .subscribe((status) => {
+      console.log('Realtime status:', status);
+    });
 });
