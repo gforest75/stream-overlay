@@ -90,6 +90,35 @@ function applyProgress() {
   toast('Objectif mis à jour');
 }
 
+/* ── Widget visibility ── */
+const VISIBILITY_KEY = 'widget_visibility';
+
+function loadVisibility() {
+  try { return JSON.parse(localStorage.getItem(VISIBILITY_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveVisibility(state) {
+  localStorage.setItem(VISIBILITY_KEY, JSON.stringify(state));
+}
+
+function applyVisibility(state) {
+  ['deaths', 'progress', 'rage'].forEach(key => {
+    const visible = state[key] !== false;
+    const section = document.getElementById('section-' + key);
+    if (section) section.style.display = visible ? '' : 'none';
+    const btn = document.getElementById('toggle-' + key);
+    if (btn) btn.classList.toggle('off', !visible);
+  });
+}
+
+function toggleWidget(key) {
+  const state = loadVisibility();
+  state[key] = state[key] === false; // false→true, true/undefined→false
+  saveVisibility(state);
+  applyVisibility(state);
+}
+
 /* ── Rage ── */
 function updateRage(d) {
   push({ rage: Math.max(0, Math.min(100, STATE.rage + d)) });
@@ -137,6 +166,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   updateUI(data);
   setConnected(true);
+  applyVisibility(loadVisibility());
 
   db
     .channel('control-realtime')

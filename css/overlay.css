@@ -33,6 +33,13 @@ html, body {
   padding: 18px 26px 20px;
   border: 1px solid rgba(255, 255, 255, 0.07);
   animation: wIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: opacity 0.3s ease;
+}
+
+.widget.hidden {
+  opacity: 0;
+  pointer-events: none;
+  animation: none; /* prevent wIn flash when hidden at load time */
 }
 
 .widget-label {

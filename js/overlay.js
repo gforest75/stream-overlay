@@ -56,7 +56,22 @@ function applyState(s) {
   document.getElementById('rage-fill').style.width = ragePct + '%';
 }
 
+function applyVisibilityOverlay() {
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem('widget_visibility')) || {}; }
+  catch {}
+  ['deaths', 'progress', 'rage'].forEach(key => {
+    const el = document.getElementById('w-' + key);
+    if (el) el.classList.toggle('hidden', state[key] === false);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  applyVisibilityOverlay();
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'widget_visibility') applyVisibilityOverlay();
+  });
+
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
     realtime: {
       params: {
