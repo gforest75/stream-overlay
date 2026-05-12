@@ -74,7 +74,7 @@ function applyProgress() {
   const rawLabel = document.getElementById('input-label').value.trim();
 
   const total = parseInt(rawTotal, 10);
-  if (isNaN(total) || total < 1 || total > 99) return;
+  if (isNaN(total) || total < 1 || total > 999) return;
 
   // Fall back to current label if the field is left empty
   const label = rawLabel !== '' ? sanitizeLabel(rawLabel) : STATE.progress_label;

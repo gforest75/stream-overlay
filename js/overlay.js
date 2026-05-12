@@ -21,7 +21,7 @@ function validateState(s) {
     deaths:           Math.max(0, Math.min(9999, parseInt(s.deaths, 10)           || 0)),
     rage:             Math.max(0, Math.min(100,  parseInt(s.rage, 10)             || 0)),
     progress_current: Math.max(0, Math.min(999,  parseInt(s.progress_current, 10) || 0)),
-    progress_total:   Math.max(1, Math.min(99,   parseInt(s.progress_total, 10)   || 10)),
+    progress_total:   Math.max(1, Math.min(999,  parseInt(s.progress_total, 10)   || 10)),
     progress_label:   typeof s.progress_label === 'string'
       ? s.progress_label.replace(/[^a-zA-ZÀ-ÿ0-9 \-]/g, '').trim().slice(0, 30) || 'Bosses'
       : 'Bosses',
