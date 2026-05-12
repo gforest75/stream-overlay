@@ -70,14 +70,15 @@ function sanitizeLabel(s) {
 }
 
 function applyProgress() {
-  const rawTotal = document.getElementById('input-total').value.trim();
-  const rawLabel = document.getElementById('input-label').value.trim();
+  const rawTotal = document.getElementById('prog-total').value.trim();
+  const rawLabel = document.getElementById('prog-label').value.trim();
 
   const total = parseInt(rawTotal, 10);
   if (isNaN(total) || total < 1 || total > 999) return;
 
-  // Fall back to current label if the field is left empty
   const label = rawLabel !== '' ? sanitizeLabel(rawLabel) : STATE.progress_label;
+
+  console.log('[applyProgress] rawTotal:', rawTotal, 'rawLabel:', rawLabel, '→ total:', total, 'label:', label);
 
   push({
     progress_label:   label,
@@ -85,8 +86,8 @@ function applyProgress() {
     progress_current: 0,
   });
 
-  document.getElementById('input-total').value = '';
-  document.getElementById('input-label').value = '';
+  document.getElementById('prog-total').value = '';
+  document.getElementById('prog-label').value = '';
   toast('Objectif mis à jour');
 }
 
